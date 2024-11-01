@@ -2,30 +2,19 @@ name: Deploy to GitHub Pages
 
 on:
   release:
-    types: [published]  # Запуск при публикации нового релиза
+    types: [published]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build the project
-        run: npm run build  # Замените на команду сборки вашего приложения
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build  # Папка, где находятся собранные файлы
-          destination_dir: v${{ github.event.release.tag_name }}  # Папка для каждой версии релиза
+          publish_dir: .  # Публикация всех файлов из корня репозитория
+          destination_dir: v${{ github.event.release.tag_name }}  # Публикация по версии релиза
