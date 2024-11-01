@@ -1,1 +1,26 @@
+name: Github Pages
 
+on:
+  release:
+    types: [published]  # Запуск при публикации нового релиза
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Install dependencies
+        run: npm install
+
+      - name: Copy static files
+        run: cp -r . ./build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build  # Папка, где находится собранное приложение (замените, если нужно)
+          destination_dir: v${{ github.event.release.tag_name }}  # Использует версию релиза для каталога
