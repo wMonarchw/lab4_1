@@ -1,4 +1,4 @@
-name: Github Pages
+name: Deploy to GitHub Pages
 
 on:
   release:
@@ -11,16 +11,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
       - name: Install dependencies
         run: npm install
 
-      - name: Copy static files
-        run: cp -r . ./build
+      - name: Build the project
+        run: npm run build  # Замените на команду сборки вашего приложения
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build  # Папка, где находится собранное приложение (замените, если нужно)
-          destination_dir: v${{ github.event.release.tag_name }}  # Использует версию релиза для каталога
+          publish_dir: ./build  # Папка, где находятся собранные файлы
+          destination_dir: v${{ github.event.release.tag_name }}  # Папка для каждой версии релиза
